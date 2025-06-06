@@ -1,25 +1,38 @@
+#include <SoftwareSerial.h>
+#include <PZEM004Tv30.h>
+
+// Inisialisasi SoftwareSerial untuk masing-masing PZEM
+SoftwareSerial softSerial1(2, 3);  // RX, TX untuk PZEM R
+SoftwareSerial softSerial2(4, 5);  // RX, TX untuk PZEM S
+SoftwareSerial softSerial3(6, 7);  // RX, TX untuk PZEM T
+
+PZEM004Tv30 pzemR(softSerial1);
+PZEM004Tv30 pzemS(softSerial2);
+PZEM004Tv30 pzemT(softSerial3);
+
 void setup() {
-  Serial.begin(9600);
-  // Mulai komunikasi serial dengan baudrate 9600
-  randomSeed(analogRead(0)); // Inisialisasi random berdasarkan noise analog
+  Serial.begin(9600); // Serial utama untuk komunikasi dengan PC
+  softSerial1.begin(9600);
+  softSerial2.begin(9600);
+  softSerial3.begin(9600);
+
+  delay(1000); // Waktu inisialisasi
 }
 
 void loop() {
-  // Buat nilai tegangan random antara 210.0 - 230.0
-  float teganganR = random(2100, 2301) / 10.0;
-  float teganganS = random(2100, 2301) / 10.0;
-  float teganganT = random(2100, 2301) / 10.0;
-  String V_R, V_S, V_T;
+  float teganganR = pzemR.voltage();
+  float teganganS = pzemS.voltage();
+  float teganganT = pzemT.voltage();
+  float arusR = pzemR.current();
+  float arusS = pzemS.current();
+  float arusT = pzemT.current();
 
-  V_R = teganganR;
-  V_S = teganganS;
-  V_T = teganganT;
-  // Kirim data ke serial dalam format: R,S,T
-  Serial.print(V_R);
-  Serial.print(",");
-  Serial.print(V_S);
-  Serial.print(",");
-  Serial.println(V_T);
+  Serial.print(teganganR); Serial.print(",");
+  Serial.print(teganganS); Serial.print(",");
+  Serial.print(teganganT); Serial.print(",");
+  Serial.print(arusR); Serial.print(",");
+  Serial.print(arusS); Serial.print(",");
+  Serial.println(arusT);
 
-  delay(1000); // kirim setiap 1 detik
+  delay(1000);
 }

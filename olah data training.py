@@ -9,16 +9,16 @@ from tensorflow.keras.callbacks import EarlyStopping
 import joblib
 
 # 1. Load Dataset
-df = pd.read_csv(r'E:\PROJECK\tobi\dataset_tegangaan_RST.csv')
+df = pd.read_csv(r'E:\PROJECK\tobi\dataset_tegangan_balance_unbalance.csv')
 
 # 2. Validasi kolom
-required_columns = ['V_R', 'V_S', 'V_T', 'Kondisi']
+required_columns = ['R', 'S', 'T', 'I_R', 'I_S', 'I_T', 'Kondisi']
 missing = set(required_columns) - set(df.columns)
 if missing:
     raise ValueError(f"Kolom berikut tidak ditemukan di dataset: {missing}")
 
 # 3. Pisahkan fitur dan label
-X = df[['V_R', 'V_S', 'V_T']].values
+X = df[['R', 'S', 'T', 'I_R', 'I_S', 'I_T']].values
 y = df['Kondisi'].values  # 0: balance, 1: unbalance
 
 # 4. Normalisasi
@@ -30,7 +30,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, 
 
 # 6. Model ANN
 model = Sequential([
-    Dense(16, input_dim=3, activation='relu'),
+    Dense(16, input_dim = 6, activation='relu'),
     Dense(8, activation='relu'),
     Dense(1, activation='sigmoid')
 ])
